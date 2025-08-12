@@ -9,7 +9,10 @@
   <body>
     <!-- Notification toast -->
     <div id="toast" class="toast hidden">
-      <span class="toast-icon">🔔</span>
+      <div id="bell" class="bell" title="Notifications" aria-live="polite" aria-label="Notifications">
+        <span class="bell-icon">🔔</span>
+        <span id="bell-count" class="badge hidden">0</span>
+      </div>
       <span id="toast-text">New document added</span>
     </div>
 
@@ -31,29 +34,29 @@
           <div class="view-toggle" role="group" aria-label="Toggle view">
             <button id="list-view-btn" class="toggle-btn active" title="List view" aria-pressed="true">
               <!-- List icon -->
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="8" y1="6" x2="21" y2="6"></line>
-                <line x1="8" y1="12" x2="21" y2="12"></line>
-                <line x1="8" y1="18" x2="21" y2="18"></line>
-                <circle cx="4" cy="6" r="2"></circle>
-                <circle cx="4" cy="12" r="2"></circle>
-                <circle cx="4" cy="18" r="2"></circle>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="10" y="2" width="12" height="4"></rect>
+                <rect x="10" y="10" width="12" height="4"></rect>
+                <rect x="10" y="18" width="12" height="4"></rect>
+                <rect x="2" y="2" width="4" height="4"></rect>
+                <rect x="2" y="10" width="4" height="4"></rect>
+                <rect x="2" y="18" width="4" height="4"></rect>
+                
               </svg>
             </button>
             <button id="grid-view-btn" class="toggle-btn" title="Grid view" aria-pressed="false">
               <!-- Grid icon -->
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="1" y="4" width="5" height="7"></rect>
+                <rect x="9" y="4" width="5" height="7"></rect>
+                <rect x="17" y="4" width="5" height="7"></rect>
+                <rect x="1" y="14" width="5" height="7"></rect>
+                <rect x="9" y="14" width="5" height="7"></rect>
+                <rect x="17" y="14" width="5" height="7"></rect>
+                
               </svg>
             </button>
 
-            <button id="bell" class="bell" title="Notifications" aria-live="polite" aria-label="Notifications">
-              <span class="bell-icon">🔔</span>
-              <span id="bell-count" class="badge hidden">0</span>
-            </button>
           </div>
         </div>
       </header>
