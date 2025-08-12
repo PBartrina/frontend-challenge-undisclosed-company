@@ -84,9 +84,18 @@ function wireUI() {
 async function refreshFromServer() {
   try {
     const docs = await fetchDocuments();
-    // Sort newest first by default using CreatedAt desc
-    docs.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
-    state.remoteDocuments = docs;
+    // Merge new documents into the existing remote set (do not replace)
+    const byId = new Map(state.remoteDocuments.map((d) => [d.ID, d]));
+    for (const d of docs) {
+      if (byId.has(d.ID)) {
+        Object.assign(byId.get(d.ID), d);
+      } else {
+        state.remoteDocuments.push(d);
+        byId.set(d.ID, d);
+      }
+    }
+    // Keep newest first by creation date
+    state.remoteDocuments.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
     recomputeDocuments();
   } catch (err) {
     console.error('Failed to load documents', err);
@@ -109,9 +118,28 @@ function connectWebSocket() {
       // Increment bell counter and show toast
       state.unseenNotifications += 1;
       updateBell();
-      // Refresh list from server to reflect new document
-      refreshFromServer();
+      // Append the new document to the current list immediately (non-destructive)
+      if (msg && msg.DocumentID) {
+        const existing = state.remoteDocuments.find((d) => d.ID === msg.DocumentID) ||
+          state.localDocuments.find((d) => d.ID === msg.DocumentID);
+        if (!existing) {
+          const nowIso = msg.Timestamp || new Date().toISOString();
+          const placeholder = {
+            ID: msg.DocumentID,
+            Title: msg.DocumentTitle || 'New document',
+            Version: '',
+            CreatedAt: nowIso,
+            UpdatedAt: nowIso,
+            Contributors: [],
+            Attachments: [],
+          };
+          state.remoteDocuments.unshift(placeholder);
+          recomputeDocuments();
+        }
+      }
       showToast('New document added');
+      // Optionally also refresh from server in the background to hydrate details
+      refreshFromServer();
     } catch (_) {
       // ignore
     }
@@ -224,6 +252,7 @@ function recomputeDocuments() {
       merged.push(d);
     }
   }
+  // Keep order: local (already newest first) followed by remote newest first
   state.documents = merged;
   render();
 }
