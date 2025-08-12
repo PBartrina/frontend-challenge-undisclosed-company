@@ -3,7 +3,9 @@ import { fetchDocuments } from './services.js';
 import { renderListRow, renderGridCard } from './renderers.js';
 
 const state = {
-  documents: [],
+  documents: [], // merged view: localDocuments + remoteDocuments
+  localDocuments: [],
+  remoteDocuments: [],
   view: 'list', // 'list' | 'grid'
   sort: '', // 'name' | 'version' | 'createdAt'
   unseenNotifications: 0,
@@ -32,7 +34,7 @@ init();
 
 function init() {
   wireUI();
-  loadDocuments();
+  refreshFromServer();
   connectWebSocket();
 }
 
@@ -71,21 +73,21 @@ function wireUI() {
         .map((s) => s.trim())
         .filter(Boolean),
     };
-    state.documents.unshift(doc); // newest first
-    render();
+    state.localDocuments.unshift(doc); // newest first
+    recomputeDocuments();
     els.createModal.close();
     els.createForm.reset();
     showToast('New document added');
   });
 }
 
-async function loadDocuments() {
+async function refreshFromServer() {
   try {
     const docs = await fetchDocuments();
     // Sort newest first by default using CreatedAt desc
     docs.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
-    state.documents = docs;
-    render();
+    state.remoteDocuments = docs;
+    recomputeDocuments();
   } catch (err) {
     console.error('Failed to load documents', err);
   }
@@ -107,9 +109,9 @@ function connectWebSocket() {
       // Increment bell counter and show toast
       state.unseenNotifications += 1;
       updateBell();
+      // Refresh list from server to reflect new document
+      refreshFromServer();
       showToast('New document added');
-      // Optionally reflect the incoming title as a placeholder entry (without full data)
-      // but requirement says only notify in realtime, not add to list; we keep list intact.
     } catch (_) {
       // ignore
     }
@@ -204,6 +206,26 @@ function openCreateModal() {
 function updateBell() {
   els.bellCount.textContent = String(state.unseenNotifications);
   els.bellCount.classList.toggle('hidden', state.unseenNotifications === 0);
+}
+
+function recomputeDocuments() {
+  // Merge local and remote documents, preferring local order first
+  const byId = new Map();
+  const merged = [];
+  for (const d of state.localDocuments) {
+    if (!byId.has(d.ID)) {
+      byId.set(d.ID, true);
+      merged.push(d);
+    }
+  }
+  for (const d of state.remoteDocuments) {
+    if (!byId.has(d.ID)) {
+      byId.set(d.ID, true);
+      merged.push(d);
+    }
+  }
+  state.documents = merged;
+  render();
 }
 
 // Expose minimal API for tests (if needed)

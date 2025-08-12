@@ -1,9 +1,13 @@
-import { createElement, humanList } from './utils.js';
+import { createElement, humanList, formatRelativeDate } from './utils.js';
 
 export function renderListRow(doc) {
   const nameCol = createElement('div', { class: 'col' }, [
     createElement('div', { class: 'name' }, doc.Title),
-    createElement('div', { class: 'muted' }, `Version ${doc.Version || '—'}`),
+    createElement(
+      'div',
+      { class: 'muted' },
+      `Version ${doc.Version || '—'} · ${formatRelativeDate(doc.CreatedAt)}`
+    ),
   ]);
 
   const contributors = createElement(
@@ -27,7 +31,11 @@ export function renderListRow(doc) {
 
 export function renderGridCard(doc) {
   const title = createElement('div', { class: 'title' }, doc.Title);
-  const ver = createElement('div', { class: 'version' }, `Version ${doc.Version || '—'}`);
+  const ver = createElement(
+    'div',
+    { class: 'version' },
+    `Version ${doc.Version || '—'} · ${formatRelativeDate(doc.CreatedAt)}`
+  );
   const contributors = createElement('div', { class: 'list' }, (doc.Contributors || []).map((c) => c.Name));
   const attachments = createElement('div', { class: 'list muted' }, doc.Attachments || []);
 
