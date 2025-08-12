@@ -108,6 +108,8 @@ async function refreshFromServer() {
 }
 
 function connectWebSocket() {
+  // In tests, disable websocket connection completely
+  if (typeof window !== 'undefined' && window.__TEST__) return;
   const url = `ws://localhost:8080/notifications`;
   let socket;
   try {

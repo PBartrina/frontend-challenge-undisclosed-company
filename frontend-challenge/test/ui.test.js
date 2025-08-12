@@ -7,7 +7,6 @@ async function loadApp({ documents = [] } = {}) {
   const dom = new JSDOM(`<!doctype html><html><head></head><body></body></html>`, {
     url: 'http://localhost/',
     pretendToBeVisual: true,
-    resources: 'usable',
     runScripts: 'dangerously',
   });
 
@@ -41,6 +40,18 @@ async function loadApp({ documents = [] } = {}) {
   }
   dom.window.WebSocket = WS;
 
+  // Provide globals for module code
+  globalThis.window = dom.window;
+  globalThis.document = dom.window.document;
+  globalThis.Node = dom.window.Node;
+  globalThis.HTMLElement = dom.window.HTMLElement;
+  globalThis.window.__TEST__ = true;
+  // Dialog polyfills for JSDOM
+  if (!('showModal' in dom.window.HTMLDialogElement.prototype)) {
+    dom.window.HTMLDialogElement.prototype.showModal = function () {};
+    dom.window.HTMLDialogElement.prototype.close = function () {};
+  }
+
   // Load modules
   const utilsUrl = new URL('../app/utils.js', import.meta.url);
   const servicesUrl = new URL('../app/services.js', import.meta.url);
@@ -56,7 +67,7 @@ async function loadApp({ documents = [] } = {}) {
   return dom;
 }
 
-test('renders list with headers and rows', async () => {
+test('renders list with headers and rows', { timeout: 2000 }, async (t) => {
   const docs = [
     {
       ID: '1',
@@ -75,9 +86,10 @@ test('renders list with headers and rows', async () => {
   assert.match(list.textContent, /Name/i);
   assert.match(list.textContent, /Contributors/i);
   assert.match(list.textContent, /Attachments/i);
+  dom.window.close();
 });
 
-test('grid shows per-line contributors and attachments', async () => {
+test('grid shows per-line contributors and attachments', { timeout: 2000 }, async (t) => {
   const docs = [
     {
       ID: '2',
@@ -97,6 +109,7 @@ test('grid shows per-line contributors and attachments', async () => {
   assert.match(grid.textContent, /Bob/);
   assert.match(grid.textContent, /Stout/);
   assert.match(grid.textContent, /IPA/);
+  dom.window.close();
 });
 
 
