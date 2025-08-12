@@ -1,0 +1,7 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Use linguist to classify vendored files
+frontend-challenge/server/go.sum linguist-vendored
+
+

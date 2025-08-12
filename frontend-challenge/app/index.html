@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documents</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <!-- Notification toast -->
+    <div id="toast" class="toast hidden">
+      <span class="toast-icon">🔔</span>
+      <span id="toast-text">New document added</span>
+    </div>
+
+    <main class="container">
+      <header class="page-header">
+        <h1>Documents</h1>
+
+        <div class="header-actions">
+          <div class="sort">
+            <label for="sort-select">Sort by:</label>
+            <select id="sort-select" aria-label="Sort documents">
+              <option value="">Select one…</option>
+              <option value="name">Name</option>
+              <option value="version">Version</option>
+              <option value="createdAt">Creation date</option>
+            </select>
+          </div>
+
+          <div class="view-toggle" role="group" aria-label="Toggle view">
+            <button id="list-view-btn" class="toggle-btn active" title="List view" aria-pressed="true">
+              <!-- List icon -->
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <circle cx="4" cy="6" r="2"></circle>
+                <circle cx="4" cy="12" r="2"></circle>
+                <circle cx="4" cy="18" r="2"></circle>
+              </svg>
+            </button>
+            <button id="grid-view-btn" class="toggle-btn" title="Grid view" aria-pressed="false">
+              <!-- Grid icon -->
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </button>
+
+            <button id="bell" class="bell" title="Notifications" aria-live="polite" aria-label="Notifications">
+              <span class="bell-icon">🔔</span>
+              <span id="bell-count" class="badge hidden">0</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <section id="list-view" class="documents documents--list" aria-label="Documents list"></section>
+      <section id="grid-view" class="documents documents--grid hidden" aria-label="Documents grid"></section>
+
+      <div class="actions">
+        <button id="add-document" class="primary">+ Add document</button>
+      </div>
+    </main>
+
+    <!-- Modal for creating a document -->
+    <dialog id="create-modal" class="modal">
+      <form method="dialog" id="create-form" class="form">
+        <h2>Create document</h2>
+        <label>
+          <span>Title</span>
+          <input id="field-title" required placeholder="e.g. Ruination IPA" />
+        </label>
+        <label>
+          <span>Version</span>
+          <input id="field-version" placeholder="e.g. 1.0.0" />
+        </label>
+        <label>
+          <span>Contributors (comma separated)</span>
+          <input id="field-contributors" placeholder="e.g. Jane Doe, John Smith" />
+        </label>
+        <label>
+          <span>Attachments (comma separated)</span>
+          <input id="field-attachments" placeholder="e.g. Light Lager, Stout" />
+        </label>
+        <menu class="modal-actions">
+          <button value="cancel" class="secondary">Cancel</button>
+          <button id="create-submit" value="default" class="primary">Create</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+  </html>
+
+
+
