@@ -118,27 +118,8 @@ function connectWebSocket() {
       // Increment bell counter and show toast
       state.unseenNotifications += 1;
       updateBell();
-      // Append the new document to the current list immediately (non-destructive)
-      if (msg && msg.DocumentID) {
-        const existing = state.remoteDocuments.find((d) => d.ID === msg.DocumentID) ||
-          state.localDocuments.find((d) => d.ID === msg.DocumentID);
-        if (!existing) {
-          const nowIso = msg.Timestamp || new Date().toISOString();
-          const placeholder = {
-            ID: msg.DocumentID,
-            Title: msg.DocumentTitle || 'New document',
-            Version: '',
-            CreatedAt: nowIso,
-            UpdatedAt: nowIso,
-            Contributors: [],
-            Attachments: [],
-          };
-          state.remoteDocuments.unshift(placeholder);
-          recomputeDocuments();
-        }
-      }
       showToast('New document added');
-      // Optionally also refresh from server in the background to hydrate details
+      // Refresh from server to pull latest complete items (no placeholders)
       refreshFromServer();
     } catch (_) {
       // ignore
