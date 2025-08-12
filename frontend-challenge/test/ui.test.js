@@ -32,6 +32,7 @@ async function loadApp({ documents = [] } = {}) {
 
   // Stub fetch
   dom.window.fetch = async () => ({ ok: true, json: async () => documents });
+  globalThis.fetch = dom.window.fetch;
 
   // Stub WebSocket to avoid network
   class WS {
@@ -67,6 +68,19 @@ async function loadApp({ documents = [] } = {}) {
   return dom;
 }
 
+async function waitFor(condition, { timeout = 1000 } = {}) {
+  const start = Date.now();
+  return new Promise((resolve, reject) => {
+    (function check() {
+      try {
+        if (condition()) return resolve();
+      } catch {}
+      if (Date.now() - start > timeout) return reject(new Error('timeout'));
+      setTimeout(check, 10);
+    })();
+  });
+}
+
 test('renders list with headers and rows', { timeout: 2000 }, async (t) => {
   const docs = [
     {
@@ -81,6 +95,7 @@ test('renders list with headers and rows', { timeout: 2000 }, async (t) => {
   ];
   const dom = await loadApp({ documents: docs });
   const list = dom.window.document.getElementById('list-view');
+  await waitFor(() => list.children.length >= 2);
   // header + 1 row
   assert.ok(list.children.length >= 2, 'should have header and at least one row');
   assert.match(list.textContent, /Name/i);
@@ -105,6 +120,7 @@ test('grid shows per-line contributors and attachments', { timeout: 2000 }, asyn
   // Switch to grid view
   dom.window.document.getElementById('grid-view-btn').click();
   const grid = dom.window.document.getElementById('grid-view');
+  await waitFor(() => grid.textContent.includes('Alice'));
   assert.match(grid.textContent, /Alice/);
   assert.match(grid.textContent, /Bob/);
   assert.match(grid.textContent, /Stout/);
