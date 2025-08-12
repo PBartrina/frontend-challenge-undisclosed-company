@@ -56,6 +56,11 @@ function wireUI() {
   // Modal interactions
   els.createForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (e.submitter.innerText === 'Cancel') {
+      els.createModal.close();
+      els.createForm.reset();
+      return 0;
+    } 
     const now = new Date();
     const doc = {
       ID: uuid(),
