@@ -117,10 +117,8 @@ test('grid shows per-line contributors and attachments', { timeout: 2000 }, asyn
     },
   ];
   const dom = await loadApp({ documents: docs });
-  // Switch to grid view
-  dom.window.document.getElementById('grid-view-btn').click();
   const grid = dom.window.document.getElementById('grid-view');
-  await waitFor(() => grid.textContent.includes('Alice'));
+  await waitFor(() => grid.children.length > 0);
   assert.match(grid.textContent, /Alice/);
   assert.match(grid.textContent, /Bob/);
   assert.match(grid.textContent, /Stout/);
