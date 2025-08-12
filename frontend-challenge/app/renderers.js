@@ -10,17 +10,13 @@ export function renderListRow(doc) {
     ),
   ]);
 
-  const contributors = createElement(
-    'div',
-    { class: 'col muted' },
-    doc.Contributors?.map((c) => c.Name) ?? []
-  );
+  const contributors = createElement('div', { class: 'col muted' }, (
+    doc.Contributors || []
+  ).map((c) => createElement('div', {}, c.Name)));
 
-  const attachments = createElement(
-    'div',
-    { class: 'col muted' },
-    doc.Attachments ?? []
-  );
+  const attachments = createElement('div', { class: 'col muted' }, (
+    doc.Attachments || []
+  ).map((a) => createElement('div', {}, a)));
 
   return createElement('article', { class: 'row', role: 'group', 'aria-label': doc.Title }, [
     nameCol,
@@ -36,8 +32,8 @@ export function renderGridCard(doc) {
     { class: 'version' },
     `Version ${doc.Version || '—'} · ${formatRelativeDate(doc.CreatedAt)}`
   );
-  const contributors = createElement('div', { class: 'list' }, (doc.Contributors || []).map((c) => c.Name));
-  const attachments = createElement('div', { class: 'list muted' }, doc.Attachments || []);
+  const contributors = createElement('div', { class: 'list' }, (doc.Contributors || []).map((c) => createElement('div', {}, c.Name)));
+  const attachments = createElement('div', { class: 'list muted' }, (doc.Attachments || []).map((a) => createElement('div', {}, a)));
 
   return createElement('article', { class: 'card', role: 'group', 'aria-label': doc.Title }, [
     title,

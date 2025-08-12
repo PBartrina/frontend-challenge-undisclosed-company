@@ -152,6 +152,13 @@ function render() {
       createElement('div', { class: 'empty' }, 'No documents yet')
     );
   } else {
+    // Header row with column titles
+    const header = createElement('div', { class: 'row header', role: 'presentation' }, [
+      createElement('div', { class: 'col name' }, 'Name'),
+      createElement('div', { class: 'col' }, 'Contributors'),
+      createElement('div', { class: 'col' }, 'Attachments'),
+    ]);
+    els.listView.append(header);
     for (const d of docs) {
       els.listView.append(renderListRow(d));
     }

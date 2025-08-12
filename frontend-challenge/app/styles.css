@@ -44,6 +44,8 @@ body {
 
 .card, .row { background: var(--panel); border: 1px solid var(--border); border-radius: 4px;}
 .row { padding: 16px 20px; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 20px; align-items: center; }
+.row.header { color: var(--muted); font-weight: 600; background: transparent; box-shadow: none; border: none; padding: 8px 4px 8px 8px; }
+.row.header .name { font-weight: 600; color: var(--muted); }
 .row .name { font-weight: 700; color: #0b1220; }
 .row .muted { color: var(--muted); font-size: 14px; }
 .row .col { display: grid; gap: 6px; }
