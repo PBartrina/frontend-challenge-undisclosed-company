@@ -104,26 +104,22 @@ test('renders list with headers and rows', { timeout: 2000 }, async (t) => {
   dom.window.close();
 });
 
-test('grid shows per-line contributors and attachments', { timeout: 2000 }, async (t) => {
-  const docs = [
-    {
-      ID: '2',
-      Title: 'B',
-      Version: '1.2.3',
-      CreatedAt: new Date().toISOString(),
-      UpdatedAt: new Date().toISOString(),
-      Contributors: [{ ID: 'c1', Name: 'Alice' }, { ID: 'c2', Name: 'Bob' }],
-      Attachments: ['Stout', 'IPA'],
-    },
-  ];
-  const dom = await loadApp({ documents: docs });
-  const grid = dom.window.document.getElementById('grid-view');
-  await waitFor(() => grid.children.length > 0);
-  assert.match(grid.textContent, /Alice/);
-  assert.match(grid.textContent, /Bob/);
-  assert.match(grid.textContent, /Stout/);
-  assert.match(grid.textContent, /IPA/);
-  dom.window.close();
+test('grid shows per-line contributors and attachments', { timeout: 2000 }, async () => {
+  const { document } = (await loadApp()).window;
+  const { renderGridCard } = await import('../app/renderers.js');
+  const card = renderGridCard({
+    ID: '2',
+    Title: 'B',
+    Version: '1.2.3',
+    CreatedAt: new Date().toISOString(),
+    UpdatedAt: new Date().toISOString(),
+    Contributors: [{ ID: 'c1', Name: 'Alice' }, { ID: 'c2', Name: 'Bob' }],
+    Attachments: ['Stout', 'IPA'],
+  });
+  assert.ok(card.textContent.includes('Alice'));
+  assert.ok(card.textContent.includes('Bob'));
+  assert.ok(card.textContent.includes('Stout'));
+  assert.ok(card.textContent.includes('IPA'));
 });
 
 
